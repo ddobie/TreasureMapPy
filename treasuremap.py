@@ -3,7 +3,7 @@ import urllib.parse
 import os
 import sys
 import json
-
+import logging
 
 class Pointings:
     '''
@@ -24,8 +24,12 @@ class Pointings:
     def __init__(self, status, graceid, instrumentid, band, api_token=None):
         '''Constructor method
         '''
+        
+        self.logger = logging.getLogger('treasuremap.Pointings')
+        
+        self.BASE = 'http://treasuremap.space/api/v0'
 
-        assert status in ["planned", "completed"]
+        assert status in ["planned", "completed"],"Status must be planned or completed"
 
         self.status = status
         self.graceid = graceid
@@ -86,8 +90,58 @@ class Pointings:
         '''
         Submit pointings to treasuremap
         '''
-        BASE = 'http://treasuremap.space/api/v0'
         TARGET = 'pointings'
-        r = requests.post(url=BASE + '/' + TARGET, json=self.json_data)
+        url = '{}/{}'.format(self.BASE, TARGET)
+        r = requests.post(url=url, json=self.json_data)
 
+        return r
+        
+    def cancel(self, ids):
+        '''
+        Cancel individual pointings
+        
+        :param ids: list of treasuremap pointing IDs
+        :type ids: list
+        '''
+        
+        TARGET = "updated_pointings"
+        
+        if self.status != "planned":
+            logger.critical("Can only cancel planned pointings")
+            return
+        
+        params = {
+            "api_token":self.api_token,
+            "ids":ids,
+            "status":"cancelled"
+        }
+        
+        url = "{}/{}?{}".format(self.BASE, self.TARGET, urllib.parse.urlencode(params))
+        
+        r = requests.post(url = url)
+        
+        return r
+        
+        
+    def cancel(self):
+        '''
+        Cancel all pointings for an event
+        '''
+        
+        TARGET = "cancel_all"
+        
+        if self.status != "planned":
+            logger.critical("Can only cancel planned pointings")
+            return
+        
+        params = {
+            "api_token":self.api_token,
+            "ids":ids,
+            "status":self.instrument
+        }
+        
+        url = "{}/{}?{}".format(self.BASE, self.TARGET, urllib.parse.urlencode(params))
+        
+        r = requests.post(url = url)
+        
         return r
