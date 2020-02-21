@@ -1,4 +1,4 @@
-from treasuremap import Pointings
+from treasuremap.treasuremap import Pointings
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord
@@ -29,7 +29,7 @@ obs_length = [
     "10:38:42"]
 
 # Set up depth
-rms_vals = np.asarray([35, 39, 39])*u.uJy
+rms_vals = np.asarray([35, 39, 39]) * u.uJy
 
 
 ra = S190814bv_coord.ra.deg
@@ -40,13 +40,16 @@ S190814bv = Pointings("planned", graceid, instrumentid, band)
 
 # Loop over each observation and add to Pointings
 for start, dur, rms in zip(obs_start, obs_length, rms_vals):
-    start_dt = dt.datetime.strptime(start,"%Y-%m-%dT%H:%M:%S")
-    dodgy_delta = dt.datetime.strptime(dur, "%H:%M:%S") - dt.datetime.strptime("00:00:00", "%H:%M:%S")
-    
-    time = start_dt + dodgy_delta/2
+    start_dt = dt.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
+    dodgy_delta = dt.datetime.strptime(
+        dur, "%H:%M:%S") - dt.datetime.strptime("00:00:00", "%H:%M:%S")
+
+    time = start_dt + dodgy_delta / 2
     time_str = dt.datetime.strftime(time, "%Y-%m-%dT%H:%M:%S.%f")[:-4]
-    
-    S190814bv.add_pointing(ra, dec, time_str, rms.to(u.Jy).value * 5, depth_unit)
+
+    S190814bv.add_pointing(
+        ra, dec, time_str, rms.to(
+            u.Jy).value * 5, depth_unit)
 
 # Build the JSON and submit
 S190814bv.build_json()
@@ -59,4 +62,3 @@ S190814bv.cancel([cancel_id])
 
 # Cancel all pointings
 S190814bv.cancel_all()
-

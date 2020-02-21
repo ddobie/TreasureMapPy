@@ -5,6 +5,7 @@ import sys
 import json
 import logging
 
+
 class Pointings:
     '''
     Store all pointing information for submission to treasuremap
@@ -24,23 +25,24 @@ class Pointings:
     def __init__(self, status, graceid, instrumentid, band, api_token=None):
         '''Constructor method
         '''
-        
+
         self.logger = logging.getLogger('treasuremap.Pointings')
-        
+
         self.BASE = 'http://treasuremap.space/api/v0'
 
-        assert status in ["planned", "completed"],"Status must be planned or completed"
+        assert status in [
+            "planned", "completed"], "Status must be planned or completed"
 
         self.status = status
         self.graceid = graceid
         self.band = band
         self.instrumentid = instrumentid
-        
+
         if api_token is None:
             self.api_token = os.getenv('TREASUREMAP_API')
         else:
             self.api_token = api_token
-        
+
         self.pointings = []
 
     def add_pointing(self, ra, dec, time, depth,
@@ -96,51 +98,52 @@ class Pointings:
         self.logger.info(r.text)
 
         return json.loads(r.text)
-        
+
     def cancel(self, ids):
         '''
         Cancel individual pointings
-        
+
         :param ids: list of treasuremap pointing IDs
         :type ids: list
         '''
-        
+
         TARGET = "updated_pointings"
-        
+
         if self.status != "planned":
             logger.critical("Can only cancel planned pointings")
             return
-        
+
         params = {
-            "api_token":self.api_token,
-            "ids":ids,
-            "status":"cancelled"
+            "api_token": self.api_token,
+            "ids": ids,
+            "status": "cancelled"
         }
-        
-        url = "{}/{}?{}".format(self.BASE, TARGET, urllib.parse.urlencode(params))
-        
-        r = requests.post(url = url)
+
+        url = "{}/{}?{}".format(self.BASE, TARGET,
+                                urllib.parse.urlencode(params))
+
+        r = requests.post(url=url)
         self.logger.info(r.text)
-        
-        
+
     def cancel_all(self):
         '''
         Cancel all pointings for an event
         '''
-        
+
         TARGET = "cancel_all"
-        
+
         if self.status != "planned":
             logger.critical("Can only cancel planned pointings")
             return
-        
+
         params = {
-            "api_token":self.api_token,
-            "graceid":self.graceid,
-            "status":self.instrumentid
+            "api_token": self.api_token,
+            "graceid": self.graceid,
+            "status": self.instrumentid
         }
-        
-        url = "{}/{}?{}".format(self.BASE, TARGET, urllib.parse.urlencode(params))
-        
-        r = requests.post(url = url)
+
+        url = "{}/{}?{}".format(self.BASE, TARGET,
+                                urllib.parse.urlencode(params))
+
+        r = requests.post(url=url)
         self.logger.info(r.text)
