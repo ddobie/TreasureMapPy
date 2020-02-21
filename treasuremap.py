@@ -13,16 +13,15 @@ class Pointings:
     :type status: str
     :param graceid: Event ID in GraceDB
     :type graceid: str
+    :param instrumentid: Instrument ID
+    :type instrumentid: int
+    :param band: Observing band
+    :type band: str
     :param api_token: Treasuremap API token, defaults to None
     :type api_token: str
-    :param instrumentid: Instrument ID, defaults to 65 (for ASKAP)
-    :type instrumentid: int
-    :param band: Observing band, defaults to `other`
-    :type band: str
     '''
 
-    def __init__(self, status, graceid, api_token=None,
-                 instrumentid=65, band='other'):
+    def __init__(self, status, graceid, instrumentid, band, api_token=None):
         '''Constructor method
         '''
 
@@ -41,7 +40,7 @@ class Pointings:
         self.pointings = []
 
     def add_pointing(self, ra, dec, time, depth,
-                     depth_unit='flux_jy', pos_angle=0.0):
+                     depth_unit, pos_angle=0.0):
         '''
         Add pointing
 
@@ -53,10 +52,10 @@ class Pointings:
         :type time: str, formatted as 'YYYY-MM-DDTHH:MM:SS.FF'
         :param depth: Pointing depth (5 sigma image RMS)
         :type depth: float
-        :param depth_unit: Depth unit, defaults to `flux_jy`
-        :type depth_unit: str, optional
+        :param depth_unit: Depth unit
+        :type depth_unit: str
         :param pos_angle: Pointing position angle, defaults to 0.0
-        :type pos_angle: float
+        :type pos_angle: float, optional
         '''
 
         pointing = {
