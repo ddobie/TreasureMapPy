@@ -93,8 +93,9 @@ class Pointings:
         TARGET = 'pointings'
         url = '{}/{}'.format(self.BASE, TARGET)
         r = requests.post(url=url, json=self.json_data)
+        self.logger.info(r.text)
 
-        return r
+        return json.loads(r.text)
         
     def cancel(self, ids):
         '''
@@ -119,8 +120,9 @@ class Pointings:
         url = "{}/{}?{}".format(self.BASE, self.TARGET, urllib.parse.urlencode(params))
         
         r = requests.post(url = url)
+        self.logger.info(r.text)
         
-        return r
+        return json.loads(r.text)
         
         
     def cancel(self):
@@ -143,5 +145,6 @@ class Pointings:
         url = "{}/{}?{}".format(self.BASE, self.TARGET, urllib.parse.urlencode(params))
         
         r = requests.post(url = url)
+        self.logger.info(r.text)
         
-        return r
+        return json.loads(r.text)
