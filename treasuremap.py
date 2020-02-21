@@ -117,15 +117,13 @@ class Pointings:
             "status":"cancelled"
         }
         
-        url = "{}/{}?{}".format(self.BASE, self.TARGET, urllib.parse.urlencode(params))
+        url = "{}/{}?{}".format(self.BASE, TARGET, urllib.parse.urlencode(params))
         
         r = requests.post(url = url)
         self.logger.info(r.text)
         
-        return json.loads(r.text)
         
-        
-    def cancel(self):
+    def cancel_all(self):
         '''
         Cancel all pointings for an event
         '''
@@ -138,13 +136,11 @@ class Pointings:
         
         params = {
             "api_token":self.api_token,
-            "ids":ids,
-            "status":self.instrument
+            "graceid":self.graceid,
+            "status":self.instrumentid
         }
         
-        url = "{}/{}?{}".format(self.BASE, self.TARGET, urllib.parse.urlencode(params))
+        url = "{}/{}?{}".format(self.BASE, TARGET, urllib.parse.urlencode(params))
         
         r = requests.post(url = url)
         self.logger.info(r.text)
-        
-        return json.loads(r.text)
